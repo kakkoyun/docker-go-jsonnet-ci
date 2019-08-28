@@ -15,9 +15,11 @@ RUN curl -Lso - https://github.com/google/jsonnet/archive/v${JSONNET_VERSION}.ta
 RUN GO111MODULE=on go get github.com/google/go-jsonnet/cmd/jsonnet@v${JSONNET_VERSION}
 RUN GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCILINT_VERSION}
 RUN GO111MODULE=on go get github.com/prometheus/prometheus/cmd/promtool@v${PROMTOOL_VERSION}
+RUN GO111MODULE=on go get github.com/brancz/gojsontoyaml
 
 FROM golang:1.12-stretch
 COPY --from=0 /usr/local/bin/jsonnetfmt /bin
 COPY --from=0 /go/bin/jsonnet /bin
 COPY --from=0 /go/bin/golangci-lint /bin
 COPY --from=0 /go/bin/promtool /bin
+COPY --from=0 /go/bin/gojsontoyaml /bin
