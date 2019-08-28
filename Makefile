@@ -1,0 +1,20 @@
+VERSION=0.1.0
+PROMTOOL_VERSION=2.12.0
+JSONNET_VERSION=0.13.0
+GOLANGCILINT_VERSION=1.17.1
+DOCKER_REPO=kakkoyun/go-jsonnet-ci
+DOCKER_IMAGE=${DOCKER_REPO}:${VERSION}
+
+.DEFAULT_GOAL := push
+
+.PHONY: build
+build:
+	docker build  \
+		--build-arg PROMTOOL_VERSION=${PROMTOOL_VERSION} \
+		--build-arg GOLANGCILINT_VERSION=${GOLANGCILINT_VERSION} \
+		--build-arg JSONNET_VERSION=${JSONNET_VERSION} \
+		-t ${DOCKER_IMAGE} -t ${DOCKER_REPO}:latest .
+
+.PHONY: push
+push: build
+	docker push ${DOCKER_REPO}
