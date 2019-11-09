@@ -1,7 +1,9 @@
-VERSION=0.1.1
-PROMTOOL_VERSION=2.12.0
-JSONNET_VERSION=0.13.0
-GOLANGCILINT_VERSION=1.17.1
+VERSION := $(strip $(shell [ -d .git ] && git describe --always --tags --dirty))
+BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%S%Z")
+VCS_REF := $(strip $(shell [ -d .git ] && git rev-parse --short HEAD))
+GO_VERSION=1.13
+JSONNET_VERSION=0.14.0
+GOLANGCILINT_VERSION=1.20.0
 DOCKER_REPO=kakkoyun/go-jsonnet-ci
 DOCKER_IMAGE=${DOCKER_REPO}:${VERSION}
 
@@ -9,8 +11,12 @@ DOCKER_IMAGE=${DOCKER_REPO}:${VERSION}
 
 .PHONY: build
 build:
-	docker build  \
-		--build-arg PROMTOOL_VERSION=${PROMTOOL_VERSION} \
+	docker build \
+		--build-arg BUILD_DATE="$(BUILD_DATE)" \
+		--build-arg VERSION="$(VERSION)" \
+		--build-arg VCS_REF="$(VCS_REF)" \
+		--build-arg DOCKERFILE_PATH="/Dockerfile" \
+		--build-arg GO_VERSION=${GO_VERSION} \
 		--build-arg GOLANGCILINT_VERSION=${GOLANGCILINT_VERSION} \
 		--build-arg JSONNET_VERSION=${JSONNET_VERSION} \
 		-t ${DOCKER_IMAGE} -t ${DOCKER_REPO}:latest .
